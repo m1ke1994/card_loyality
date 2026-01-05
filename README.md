@@ -17,3 +17,12 @@ Multi-tenant loyalty platform with Telegram-only auth, dynamic QR, and Vercel-pr
 5. Deploy frontend to Vercel with `frontend/vercel.json` proxying `/api` to backend.
 
 Swagger docs available at `/api/docs/`, schema at `/api/schema/`.
+
+Vercel proxy check after deploy:
+- `GET https://<vercel-domain>/api/proxy/api/schema/` — OpenAPI YAML.
+- `GET https://<vercel-domain>/api/proxy/api/docs/` — Swagger UI.
+- `curl -X POST https://<vercel-domain>/api/proxy/api/v1/tokens/issue` — returns backend JSON/401/400 (не index.html).
+
+Vercel env (Hobby):
+- `VITE_API_BASE_URL=/api/proxy`
+- `UPSTREAM_ORIGIN=http://45.151.69.84:8000`

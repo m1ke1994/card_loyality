@@ -18,7 +18,7 @@ onMounted(async () => {
     router.replace("/");
     return;
   }
-  await fetch(`${import.meta.env.VITE_API_BASE_URL || "/api"}/api/v1/auth/telegram/consume`, {
+  await fetch(`${import.meta.env.VITE_API_BASE_URL || "/api/proxy"}/api/v1/auth/telegram/consume`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token, tenant_slug: import.meta.env.VITE_TENANT_DEFAULT || "restaurant-slug" })
