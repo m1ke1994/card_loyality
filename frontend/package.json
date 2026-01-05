@@ -15,8 +15,9 @@
     "preview": "npm run preview --workspace apps/client-pwa"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.0",
     "@playwright/test": "^1.40.0",
+    "@vercel/node": "^5.5.16",
+    "@vitejs/plugin-vue": "^5.0.0",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.1",
@@ -24,12 +25,12 @@
     "vite": "^5.0.10",
     "vite-plugin-pwa": "^0.17.4"
   },
-    "dependencies": {
-      "@vueuse/motion": "^2.1.0",
-      "axios": "^1.6.2",
-      "http-proxy": "^1.18.1",
-      "qrcode": "^1.5.3",
-      "vue": "^3.3.11",
-      "vue-router": "^4.2.5"
-    }
+  "dependencies": {
+    "@vueuse/motion": "^2.1.0",
+    "axios": "^1.6.2",
+    "http-proxy": "^1.18.1",
+    "qrcode": "^1.5.3",
+    "vue": "^3.3.11",
+    "vue-router": "^4.2.5"
   }
+}
