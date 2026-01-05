@@ -1,0 +1,9 @@
+{
+  "name": "@loyalty/widget",
+  "version": "1.0.0",
+  "main": "widget.js",
+  "type": "module",
+  "scripts": {
+    "build": "cp src/widget.js widget.js"
+  }
+}

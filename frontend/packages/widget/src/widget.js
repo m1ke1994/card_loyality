@@ -1,0 +1,40 @@
+(function () {
+  const script = document.currentScript;
+  const tenant = script?.dataset?.tenant || "restaurant-slug";
+  const theme = script?.dataset?.theme || "auto";
+  const buttonText = script?.dataset?.buttonText || "Карта лояльности";
+  const baseUrl = script.src.split("/widget.js")[0];
+
+  const btn = document.createElement("button");
+  btn.innerText = buttonText;
+  btn.style.cssText =
+    "padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#0ea5e9,#8b5cf6);color:white;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,0.12);cursor:pointer;";
+
+  const overlay = document.createElement("div");
+  overlay.style.cssText =
+    "position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);z-index:9999;";
+  const frame = document.createElement("iframe");
+  frame.src = `${baseUrl}/w/${tenant}?theme=${theme}`;
+  frame.style.cssText = "width:420px;max-width:95vw;height:720px;max-height:90vh;border:none;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.25);background:white;";
+  overlay.appendChild(frame);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      overlay.style.display = "none";
+      window.parent.postMessage({ type: "loyalty:close" }, "*");
+    }
+  });
+
+  btn.addEventListener("click", () => {
+    overlay.style.display = "flex";
+    window.parent.postMessage({ type: "loyalty:open" }, "*");
+  });
+
+  document.body.appendChild(btn);
+  document.body.appendChild(overlay);
+
+  window.addEventListener("message", (event) => {
+    if (event.data?.type === "loyalty:auth") {
+      overlay.style.display = "none";
+    }
+  });
+})();

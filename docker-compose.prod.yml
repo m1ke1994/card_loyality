@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: loyalty
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  web:
+    build: ./backend
+    command: gunicorn loyalty_saas.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8000:8000"
+
+  worker:
+    build: ./backend
+    command: celery -A loyalty_saas worker --loglevel=info
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+
+  beat:
+    build: ./backend
+    command: celery -A loyalty_saas beat --loglevel=info
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+
+volumes:
+  pgdata:

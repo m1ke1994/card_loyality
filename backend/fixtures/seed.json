@@ -1,0 +1,67 @@
+[
+  {
+    "model": "tenants.tenant",
+    "pk": 1,
+    "fields": {
+      "name": "Сеть ресторанов",
+      "slug": "restaurant-slug",
+      "status": "active",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "tenants.place",
+    "pk": 1,
+    "fields": {
+      "tenant": 1,
+      "name": "Москва, ул. Тверская, 12",
+      "address": "Москва, ул. Тверская, 12",
+      "timezone": "Europe/Moscow",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenants.place",
+    "pk": 2,
+    "fields": {
+      "tenant": 1,
+      "name": "Москва, ул. Покровка, 17",
+      "address": "Москва, ул. Покровка, 17",
+      "timezone": "Europe/Moscow",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenants.place",
+    "pk": 3,
+    "fields": {
+      "tenant": 1,
+      "name": "Москва, Ленинградский пр-т, 45",
+      "address": "Москва, Ленинградский пр-т, 45",
+      "timezone": "Europe/Moscow",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenants.place",
+    "pk": 4,
+    "fields": {
+      "tenant": 1,
+      "name": "Москва, Кутузовский пр-т, 33",
+      "address": "Москва, Кутузовский пр-т, 33",
+      "timezone": "Europe/Moscow",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenants.place",
+    "pk": 5,
+    "fields": {
+      "tenant": 1,
+      "name": "Москва, ул. Профсоюзная, 56",
+      "address": "Москва, ул. Профсоюзная, 56",
+      "timezone": "Europe/Moscow",
+      "is_active": true
+    }
+  }
+]
