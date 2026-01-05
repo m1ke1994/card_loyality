@@ -1,4 +1,4 @@
-export const config = { runtime: "edge" };
+п»їexport const config = { runtime: "edge" };
 
 const UPSTREAM_ORIGIN =
   (process.env.UPSTREAM_ORIGIN ||
@@ -7,7 +7,6 @@ const UPSTREAM_ORIGIN =
     "").trim();
 
 function withCors(headers: Headers) {
-  // можно убрать, если не нужно. Но так надёжнее для любых запросов/префлайтов.
   headers.set("access-control-allow-origin", "*");
   headers.set("access-control-allow-methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
   headers.set("access-control-allow-headers", "authorization,content-type,accept");
@@ -24,29 +23,26 @@ export default async function handler(req: Request): Promise<Response> {
 
   const method = req.method.toUpperCase();
 
-  // preflight
   if (method === "OPTIONS") {
     return new Response(null, { status: 204, headers: withCors(new Headers()) });
   }
 
   const incomingUrl = new URL(req.url);
 
-  // /api/proxy/<rest>
+  // Expected: /api/proxy/<rest>
   const prefix = "/api/proxy";
   const restPath = incomingUrl.pathname.startsWith(prefix)
     ? incomingUrl.pathname.slice(prefix.length)
     : incomingUrl.pathname;
 
-  // гарантируем, что путь начинается с /
   const normalizedPath = restPath.startsWith("/") ? restPath : `/${restPath}`;
 
   const upstreamUrl = new URL(`${normalizedPath}${incomingUrl.search}`, UPSTREAM_ORIGIN);
 
-  // копируем заголовки, но убираем те, что ломают прокси/длину
   const headers = new Headers(req.headers);
   headers.delete("host");
   headers.delete("content-length");
-  headers.delete("accept-encoding"); // пусть платформа сама решает
+  headers.delete("accept-encoding");
 
   const body =
     method === "GET" || method === "HEAD" ? undefined : await req.arrayBuffer();
@@ -58,7 +54,6 @@ export default async function handler(req: Request): Promise<Response> {
     redirect: "manual",
   });
 
-  // возвращаем ответ как есть
   const outHeaders = new Headers(upstreamRes.headers);
   withCors(outHeaders);
 
