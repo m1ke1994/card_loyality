@@ -26,3 +26,7 @@ Vercel proxy check after deploy:
 Vercel env (Hobby):
 - `VITE_API_BASE_URL=/api/proxy`
 - `UPSTREAM_ORIGIN=http://45.151.69.84:8000`
+
+Проверка edge proxy:
+- `GET https://<vercel-domain>/api/proxy/__ping` → `{"ok":true}`
+- `/api/proxy/api/schema/` и `/api/proxy/api/docs/` не должны отдавать index.html
