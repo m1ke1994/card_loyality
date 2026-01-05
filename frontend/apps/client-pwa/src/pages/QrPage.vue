@@ -19,7 +19,7 @@ let timer: any;
 
 async function refreshQr() {
   statusText.value = "Запрос токена...";
-  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || "/api"}/v1/tokens/issue`, { method: "POST", credentials: "include" });
+  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || "/api"}/api/v1/tokens/issue`, { method: "POST", credentials: "include" });
   if (!res.ok) {
     statusText.value = "Ошибка загрузки";
     return;

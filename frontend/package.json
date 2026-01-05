@@ -10,7 +10,7 @@
     "dev:client": "npm run dev --workspace apps/client-pwa",
     "dev:staff": "npm run dev --workspace apps/staff-pwa",
     "dev:admin": "npm run dev --workspace apps/admin",
-    "build": "npm run build --workspace apps/client-pwa && npm run build --workspace apps/staff-pwa && npm run build --workspace apps/admin && npm run build --workspace packages/widget",
+    "build": "vite build --config apps/client-pwa/vite.config.ts",
     "lint": "npm run lint --workspace apps/client-pwa || true",
     "preview": "npm run preview --workspace apps/client-pwa"
   },
