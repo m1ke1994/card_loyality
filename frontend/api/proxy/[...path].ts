@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-const BACKEND_BASE_URL = (process.env.BACKEND_BASE_URL || "http://45.151.69.84:8000").replace(/\/+$/, "");
+const BACKEND_BASE_URL = (process.env.BACKEND_BASE_URL || "http://45.151.69.84:8000").replace(/\/+$, "");
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const pathParam = req.query.path;
@@ -20,9 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  // ВАЖНО: fetch типы в TS не принимают Buffer как BodyInit.
-  // Поэтому читаем тело в Buffer, но передаём в fetch как Uint8Array.
-  let body: Uint8Array | undefined = undefined;
+  let body: ArrayBuffer | undefined = undefined;
 
   if (method !== "GET" && method !== "HEAD") {
     const chunks: Buffer[] = [];
@@ -30,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
     }
     const buf = Buffer.concat(chunks);
-    body = new Uint8Array(buf);
+    body = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
   }
 
   const upstream = await fetch(targetUrl, {
@@ -41,7 +39,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   res.status(upstream.status);
 
-  // Не отдаём transfer-encoding, чтобы не ломать ответ на серверлессе
   upstream.headers.forEach((value, key) => {
     if (key.toLowerCase() === "transfer-encoding") return;
     res.setHeader(key, value);
