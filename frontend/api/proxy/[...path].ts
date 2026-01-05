@@ -1,39 +1,44 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-const BACKEND_BASE =
-  process.env.BACKEND_BASE_URL || "http://45.151.69.84:8000";
+const BACKEND_BASE_URL = (process.env.BACKEND_BASE_URL || "http://45.151.69.84:8000").replace(/\/+$/, "");
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const pathParam = req.query.path;
-  const targetPath = Array.isArray(pathParam)
-    ? pathParam.join("/")
-    : typeof pathParam === "string"
-    ? pathParam
-    : "";
-
-  const url = `${BACKEND_BASE}/${targetPath}`;
-
-  const headers: Record<string, string> = {};
-  for (const [k, v] of Object.entries(req.headers)) {
-    if (typeof v === "string") headers[k] = v;
-  }
-  delete headers["host"];
+  const rawPath = Array.isArray(pathParam) ? pathParam.join("/") : pathParam || "";
+  const targetPath = rawPath.toString().replace(/^\/+/, "");
+  const targetUrl = `${BACKEND_BASE_URL}/api/${targetPath}`;
 
   const method = (req.method || "GET").toUpperCase();
-  const hasBody = !["GET", "HEAD"].includes(method);
 
-  const upstream = await fetch(url, {
+  const headers: Record<string, string> = {};
+  for (const [key, value] of Object.entries(req.headers)) {
+    if (key.toLowerCase() === "host") continue;
+    if (Array.isArray(value)) {
+      headers[key] = value.join(", ");
+    } else if (typeof value === "string") {
+      headers[key] = value;
+    }
+  }
+
+  let body: Buffer | undefined;
+  if (method !== "GET" && method !== "HEAD") {
+    const chunks: Buffer[] = [];
+    for await (const chunk of req) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    }
+    body = Buffer.concat(chunks);
+  }
+
+  const upstream = await fetch(targetUrl, {
     method,
     headers,
-    body: hasBody ? JSON.stringify(req.body ?? {}) : undefined,
+    body
   });
 
   res.status(upstream.status);
   upstream.headers.forEach((value, key) => {
-    if (key.toLowerCase() === "transfer-encoding") return;
     res.setHeader(key, value);
   });
-
-  const buf = Buffer.from(await upstream.arrayBuffer());
-  res.send(buf);
+  const responseBuffer = Buffer.from(await upstream.arrayBuffer());
+  res.send(responseBuffer);
 }
